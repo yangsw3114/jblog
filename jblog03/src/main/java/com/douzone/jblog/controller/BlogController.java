@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -73,18 +74,25 @@ public class BlogController {
 		return "blog/blog-admin-basic";
 	}
 	
-	@RequestMapping("/admin/category")
+	@RequestMapping(value = "/admin/category", method=RequestMethod.GET)
 	public String adminCategory(@PathVariable("blogId") String blogId, Model model){
 		List<CategoryVo> vo = categoryService.getCategory(blogId);
 		model.addAttribute("category", vo);
 		return "blog/blog-admin-category";
 	}
 	
-	@RequestMapping("/admin/category/add")
-	public String categoryAdd(@PathVariable("blogId") String blogId) {
-		
+	@RequestMapping(value = "/admin/category", method=RequestMethod.POST)  //카테고리 추가
+	public String categoryAdd(@PathVariable("blogId") String blogId, CategoryVo categoryVo) {
+		categoryVo.setblog_id(blogId);
+		categoryService.add(categoryVo);
 		return "redirect:/" + blogId + "/admin/category";
 	}
+	
+	@RequestMapping("/admin/category/delete")
+	public String delete(@PathVariable("blogId") String blogId) {
+		return "redirect:/" + blogId + "/admin/category";
+	}
+	
 	
 	@RequestMapping("/admin/write")
 	public String adminWrite(@PathVariable("blogId") String blogId){

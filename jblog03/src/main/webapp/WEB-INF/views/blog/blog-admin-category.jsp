@@ -24,20 +24,31 @@
 		      			<th>설명</th>
 		      			<th>삭제</th>      			
 		      		</tr>
-		      		<c:forEach items="${category }" var="vo">
+		      		<c:forEach items="${category }" var="vo" varStatus="status">
 		      			<tr>
-		      				<td>${vo.no }</td>
+		      				<td>${status.count }</td>
 		      				<td>${vo.name }</td>
 		      				<td>포스트수랑삭제버튼활성화는 id연동해야이용가능</td>
-		      				<td>${vo.desc }</td>
-		      				<td><img src="${pageContext.request.contextPath}/assets/images/delete.jpg"></td>
+		      				<td>${vo.desc }</td>      				
+		      				<td>
+		      					<c:choose>
+		      						<c:when test="${not empty authUser && authUser.id == vo.blog_id }">
+		      							<a href="${pageContext.request.contextPath }/${authUser.getId() }/admin/category/delete" 
+		      							class="del" 
+		      							style="background: url(${pageContext.request.contextPath}/assets/images/delete.jpg) no-repeat 0 0 / 15px">삭제</a>
+		      						</c:when>
+		      						<c:otherwise>
+		      							&nbsp;
+		      						</c:otherwise>
+		      					</c:choose>
+		      				</td>
 		      			</tr>
 		      		</c:forEach>
 				  
 				</table>
       	
       			<h4 class="n-c">새로운 카테고리 추가</h4>
-      			<form class="add-form" method="post" action="${pageContext.request.contextPath }/${authUser.getId() }/admin/category/add">
+      			<form class="add-form" method="post" action="${pageContext.request.contextPath }/${authUser.getId() }/admin/category">
 	      			<table id="admin-cat-add">
 			      		<tr>
 			      			<td class="t">카테고리명</td>

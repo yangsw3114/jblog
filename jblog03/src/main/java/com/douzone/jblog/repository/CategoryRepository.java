@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.douzone.jblog.vo.CategoryVo;
 
+
 @Repository
 public class CategoryRepository {
 
@@ -16,5 +17,10 @@ public class CategoryRepository {
 	
 	public List<CategoryVo> findByBlogId(String blogid) {
 		return sqlSession.selectList("category.findByBlogId", blogid);
+	}
+	
+	public boolean insert(CategoryVo vo) {
+		int count = sqlSession.insert("category.insert", vo);
+		return count == 1;
 	}
 }

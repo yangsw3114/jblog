@@ -4,7 +4,7 @@
 
 	<insert id="insert" parameterType="categoryvo">
 		<![CDATA[
-		insert into category values(
+		insert into category values(null, #{name }, #{desc }, #{blog_id})
 		]]>
 	</insert>
 	

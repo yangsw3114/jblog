@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.douzone.jblog.repository.CategoryRepository;
 import com.douzone.jblog.vo.CategoryVo;
 
+
 @Service
 public class CategoryService {
 	
@@ -17,5 +18,10 @@ public class CategoryService {
 	public List<CategoryVo> getCategory(String id){
 		
 		return categoryRepository.findByBlogId(id);
+	}
+	
+	
+	public void add(CategoryVo vo) {
+		categoryRepository.insert(vo);
 	}
 }
