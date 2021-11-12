@@ -2,10 +2,11 @@ package com.douzone.jblog.vo;
 
 public class CategoryVo {
 	private Long no;
+	
 	private String name;
 	private String desc;
 	private String blog_id;
-	
+	private int count;
 	public Long getNo() {
 		return no;
 	}
@@ -14,6 +15,12 @@ public class CategoryVo {
 	}
 	public String getName() {
 		return name;
+	}
+	public int getCount() {
+		return count;
+	}
+	public void setCount(int count) {
+		this.count = count;
 	}
 	public void setName(String name) {
 		this.name = name;

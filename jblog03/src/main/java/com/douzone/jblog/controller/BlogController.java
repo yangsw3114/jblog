@@ -1,6 +1,8 @@
 package com.douzone.jblog.controller;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.ServletContext;
 
@@ -17,8 +19,10 @@ import com.douzone.jblog.exception.FileUploadException;
 import com.douzone.jblog.service.BlogService;
 import com.douzone.jblog.service.CategoryService;
 import com.douzone.jblog.service.FileUploadService;
+import com.douzone.jblog.service.PostService;
 import com.douzone.jblog.vo.BlogVo;
 import com.douzone.jblog.vo.CategoryVo;
+import com.douzone.jblog.vo.PostVo;
 
 
 
@@ -39,13 +43,41 @@ public class BlogController {
 	private CategoryService categoryService;
 	
 	@Autowired
+	private PostService postService;
+	
+	@Autowired
 	private FileUploadService fileUploadService;
 	
-	@RequestMapping({"", "/main"})
-	public String main() {
-		BlogVo vo = blogService.getSite();
-		servletContext.setAttribute("blog", vo);
+	@RequestMapping({"", "/{categoryno}", "/{categoryno}/{postNo}"})
+	public String main(@PathVariable("blogId") String blogId, @PathVariable("categoryno") Optional<Long> categoryNo,
+			@PathVariable("postNo") Optional<Long> postNo, Model model) {
+//		BlogVo vo = blogService.getSite();
+//		servletContext.setAttribute("blog", vo);
+		List<CategoryVo> cgyvo = categoryService.getCategory(blogId);
+		servletContext.setAttribute("category", cgyvo);
+		
+		
+		Long cgyNo = null;
+		if(categoryNo.isPresent()) {
+			cgyNo = categoryNo.get();
+		}
+		else {
+			cgyNo = categoryNo.orElse(1L); //값이 없다면 3L 리턴
+		}	
+		List<PostVo> postvo = postService.getPost(cgyNo);
+		servletContext.setAttribute("post", postvo);
 
+		Long postno = null;
+		if(postNo.isPresent()) {
+			postno = postNo.get();
+			PostVo postvo2 = postService.getOnePost(postno);
+			model.addAttribute("post2", postvo2); //servletContext로 넣으면 서버 끝날때까지 "post2"값이 저장되어있어서 최신화가 안됨 그래서 모델로 바꿈
+			//servletContext는 서버시작~서버끝 까지 살아남아있다.
+		}
+		else {
+			postno = postNo.orElse(1L); //값이 없다면 1L 리턴
+		}
+		System.out.println("dsfds;::::::::"+blogId);
 		return "blog/blog-main"; // WEB-INF/views/bolg/blog-main.jsp
 	}
 	
@@ -77,6 +109,12 @@ public class BlogController {
 	@RequestMapping(value = "/admin/category", method=RequestMethod.GET)
 	public String adminCategory(@PathVariable("blogId") String blogId, Model model){
 		List<CategoryVo> vo = categoryService.getCategory(blogId);
+		int i =0;
+		for(CategoryVo vv : vo) {
+			int postCount = categoryService.getPost(vv.getNo());
+			vo.get(i).setCount(postCount);
+			i++;
+		}
 		model.addAttribute("category", vo);
 		return "blog/blog-admin-category";
 	}
@@ -88,15 +126,35 @@ public class BlogController {
 		return "redirect:/" + blogId + "/admin/category";
 	}
 	
-	@RequestMapping("/admin/category/delete")
-	public String delete(@PathVariable("blogId") String blogId) {
+	@RequestMapping("/admin/category/delete/{no}")
+	public String delete(@PathVariable("blogId") String blogId, @PathVariable("no") Long CategoryNo) {
+		CategoryVo vo = new CategoryVo();
+		vo.setblog_id(blogId);
+		vo.setNo(CategoryNo);
+		categoryService.deleteContent(vo);
 		return "redirect:/" + blogId + "/admin/category";
 	}
 	
 	
-	@RequestMapping("/admin/write")
-	public String adminWrite(@PathVariable("blogId") String blogId){
+	@RequestMapping(value = "/admin/write", method=RequestMethod.GET)
+	public String adminWrite(@PathVariable("blogId") String blogId, Model model){
+		List<CategoryVo> vo = categoryService.getCategory(blogId);
+		model.addAttribute("categorySelectBox", vo);
 		return "blog/blog-admin-write";
 	}
+	
+	@RequestMapping(value = "/admin/write", method=RequestMethod.POST)
+	public String post(@PathVariable("blogId") String blogId, PostVo postVo) {
+		postService.write(postVo);
+		return "redirect:/" + blogId;
+	}
+	
+	@RequestMapping("/admin/post/delete/{cgyno}/{no}")
+	public String postdelete(@PathVariable("blogId") String blogId, @PathVariable("cgyno") Long cgyno, @PathVariable("no") Long PostNo) {
+
+		postService.Postdelete(PostNo);
+		return "redirect:/" + blogId + "/" + cgyno;
+	}
+
 	
 }

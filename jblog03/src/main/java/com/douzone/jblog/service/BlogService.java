@@ -20,4 +20,6 @@ public class BlogService {
 	public boolean update(BlogVo blogVo) {
 		return blogRepository.update(blogVo);
 	}
+	
+
 }

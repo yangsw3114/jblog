@@ -1,5 +1,6 @@
 package com.douzone.jblog.repository;
 
+
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -23,4 +24,8 @@ public class BlogRepository {
 		int count = sqlSession.update("blog.update", vo);
 		return count==1;
 	}
+	
+	
+	
+	
 }

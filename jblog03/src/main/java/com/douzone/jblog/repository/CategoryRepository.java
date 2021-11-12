@@ -23,4 +23,17 @@ public class CategoryRepository {
 		int count = sqlSession.insert("category.insert", vo);
 		return count == 1;
 	}
+	
+	public int delete(CategoryVo vo){
+		return sqlSession.delete("category.delete", vo);
+	}
+	
+	public CategoryVo findByName(String name) {
+		
+		return sqlSession.selectOne("category.findByName", name);
+	}
+	
+	public int joinPost(Long cgyNo) {
+		return sqlSession.selectOne("category.join_post",cgyNo);
+	}
 }

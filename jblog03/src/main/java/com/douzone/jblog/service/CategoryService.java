@@ -24,4 +24,17 @@ public class CategoryService {
 	public void add(CategoryVo vo) {
 		categoryRepository.insert(vo);
 	}
+	
+	public boolean deleteContent(CategoryVo vo) {
+		int count = categoryRepository.delete(vo);
+		return count == 1;
+	}
+	
+	public CategoryVo getCategory_overlap(String name) {
+		return categoryRepository.findByName(name);
+	}
+	
+	public int getPost(Long cgyNo) {
+		return categoryRepository.joinPost(cgyNo);
+	}
 }

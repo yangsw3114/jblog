@@ -14,4 +14,21 @@
 		]]>		
 	</select>
 	
+	<select id="findByName" parameterType="String" resultType="categoryvo">
+		<![CDATA[
+		select * from category where name = #{name }	
+		]]>		
+	</select>
+	
+	<delete id="delete" parameterType="categoryvo">
+		<![CDATA[
+		delete from category where no = #{no } and blog_id = #{blog_id }
+		]]>
+	</delete>
+	
+	<select id="join_post" parameterType="Long" resultType="Integer">
+	<![CDATA[
+	 select count(post.no) from category, post where category.no = post.category_no and category.no = #{category.no };
+	 ]]>
+	</select>
 </mapper>
