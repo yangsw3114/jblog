@@ -1,10 +1,10 @@
 package com.douzone.jblog.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.douzone.jblog.exception.FileUploadException;
+import com.douzone.jblog.security.Auth;
 import com.douzone.jblog.service.BlogService;
 import com.douzone.jblog.service.CategoryService;
 import com.douzone.jblog.service.FileUploadService;
@@ -23,6 +24,7 @@ import com.douzone.jblog.service.PostService;
 import com.douzone.jblog.vo.BlogVo;
 import com.douzone.jblog.vo.CategoryVo;
 import com.douzone.jblog.vo.PostVo;
+import com.douzone.jblog.vo.UserVo;
 
 
 
@@ -48,14 +50,25 @@ public class BlogController {
 	@Autowired
 	private FileUploadService fileUploadService;
 	
+	@Auth
 	@RequestMapping({"", "/{categoryno}", "/{categoryno}/{postNo}"})
 	public String main(@PathVariable("blogId") String blogId, @PathVariable("categoryno") Optional<Long> categoryNo,
 			@PathVariable("postNo") Optional<Long> postNo, Model model) {
-//		BlogVo vo = blogService.getSite();
-//		servletContext.setAttribute("blog", vo);
+		List<BlogVo> blog = (List<BlogVo>) servletContext.getAttribute("blog");
+		for(BlogVo bg : blog) {
+			System.out.println("ddd:::::::::::::" + bg.getId() + ":::");
+			System.out.println("url에서 받아오는 ID:::::" + blogId + ":::");
+			String getid = bg.getId();
+			System.out.println("이프문 접근전:" + blogId);
+			servletContext.setAttribute("blogbyId", bg);
+			if(getid==(String)blogId) {
+				System.out.println("이프문 접근:" + blogId);
+				servletContext.setAttribute("blogbyId", bg);
+			}
+		}
+		
 		List<CategoryVo> cgyvo = categoryService.getCategory(blogId);
 		servletContext.setAttribute("category", cgyvo);
-		
 		
 		Long cgyNo = null;
 		if(categoryNo.isPresent()) {
@@ -77,7 +90,7 @@ public class BlogController {
 		else {
 			postno = postNo.orElse(1L); //값이 없다면 1L 리턴
 		}
-		System.out.println("dsfds;::::::::"+blogId);
+
 		return "blog/blog-main"; // WEB-INF/views/bolg/blog-main.jsp
 	}
 	
@@ -98,16 +111,21 @@ public class BlogController {
 		return "redirect:/" + blogId + "/admin";
 	}	
 	
-	
+	@Auth
 	@RequestMapping("/admin")
 	public String adminBasic(@PathVariable("blogId") String blogId) {
-		System.out.println("test" +  blogId);
-		
+
 		return "blog/blog-admin-basic";
 	}
 	
 	@RequestMapping(value = "/admin/category", method=RequestMethod.GET)
-	public String adminCategory(@PathVariable("blogId") String blogId, Model model){
+	public String adminCategory(@PathVariable("blogId") String blogId, Model model, HttpSession session){
+		
+		UserVo authUser = (UserVo) session.getAttribute("authUser");
+		if(authUser == null) {
+			return "redirect:/";
+		}
+		
 		List<CategoryVo> vo = categoryService.getCategory(blogId);
 		int i =0;
 		for(CategoryVo vv : vo) {
@@ -135,9 +153,10 @@ public class BlogController {
 		return "redirect:/" + blogId + "/admin/category";
 	}
 	
-	
+	@Auth
 	@RequestMapping(value = "/admin/write", method=RequestMethod.GET)
 	public String adminWrite(@PathVariable("blogId") String blogId, Model model){
+
 		List<CategoryVo> vo = categoryService.getCategory(blogId);
 		model.addAttribute("categorySelectBox", vo);
 		return "blog/blog-admin-write";

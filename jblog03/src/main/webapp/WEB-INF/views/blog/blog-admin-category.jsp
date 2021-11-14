@@ -8,17 +8,20 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>JBlog</title>
-<Link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/jblog.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/jblog.css">
 <script src="${pageContext.request.contextPath }/assets/js/jquery/jquery-1.9.0.js"></script>
 <script>
 $(function(){
 	$("#category-name-check").click(function(){
-		
+		var flagSubmit = true;
 		var categoryname = $("#categoryname").val();
-		if(categoryname == ""){ return; }
+		if(categoryname == ""){ 
+			alert("카테고리명을 입력하세요.");
+			flagSubmit = false;
+		}
 		console.log(categoryname);		
 		
-		var flagSubmit = true;
+		
 		var form = document.getElementById("categoryadd");
 		
 		form.onsubmit = function(){
@@ -52,12 +55,7 @@ $(function(){
 	});
 });
 
-
-
-
 </script>
-
-
 </head>
 <body>
 	<div id="container">
@@ -82,10 +80,18 @@ $(function(){
 		      				<td>${vo.desc }</td>      				
 		      				<td>
 		      					<c:choose>
-		      						<c:when test="${not empty authUser && authUser.id == vo.blog_id}">
-		      							<a href="${pageContext.request.contextPath }/${authUser.getId() }/admin/category/delete/${vo.no }" 
-		      							class="del" 
-		      							style="background: url(${pageContext.request.contextPath}/assets/images/delete.jpg) no-repeat 0 0 / 15px">삭제</a>
+		      						<%-- 로그인된 사용자가 존재하고 그 사용자와 블로그사용자 아이디가 동일하고 연관된 포스트수가 없어야되고 카테고리는 무조건 1개있어야하므로 1개일떄는 삭제 불가능 --%>
+		      						<c:when test="${not empty authUser && authUser.id == vo.blog_id && vo.count == 0 }">
+		      							<c:choose>
+			      							<c:when test="${status.last && status.count == 1 }">
+			      								&nbsp;
+			      							</c:when>
+			      							<c:otherwise>
+				      							<a href="${pageContext.request.contextPath }/${authUser.getId() }/admin/category/delete/${vo.no }" 
+				      							class="del" 
+				      							style="background: url(${pageContext.request.contextPath}/assets/images/delete.jpg) no-repeat 0 0 / 15px">삭제</a>
+			      							</c:otherwise>
+		      							</c:choose>
 		      						</c:when>
 		      						<c:otherwise>
 		      							&nbsp;

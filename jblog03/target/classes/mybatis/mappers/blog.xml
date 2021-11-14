@@ -9,7 +9,7 @@
 		]]>
 	</update>
 	
-	<select id="findOne" resultType="blogvo">
+	<select id="findAll" resultType="blogvo">
 	<![CDATA[
 	select id, title, logo from blog
 	]]> <!-- CDATA는 character data -->	

@@ -1,5 +1,7 @@
 package com.douzone.jblog.security;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,7 +20,7 @@ public class BlogInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		BlogVo blog = (BlogVo)request.getServletContext().getAttribute("blog");
+		List<BlogVo> blog = (List<BlogVo>) request.getServletContext().getAttribute("blog");
 		if(blog == null) {
 			blog = blogService.getSite();
 			request.getServletContext().setAttribute("blog", blog);

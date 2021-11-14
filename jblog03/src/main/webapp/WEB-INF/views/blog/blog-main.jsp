@@ -28,7 +28,7 @@
 						<a href="${pageContext.request.contextPath }/${authUser.getId()}/${p.category_no}/${p.no }">${p.title }</a> 
 						<span><a href="${pageContext.request.contextPath }/${authUser.getId() }/admin/post/delete/${p.category_no }/${p.no }" 
 		      							class="del" 
-		      							style="background: url(${pageContext.request.contextPath}/assets/images/delete.jpg) no-repeat 0 0 / 9px">삭제</a></span> 
+		      							style="background: url(${pageContext.request.contextPath}/assets/images/delete.jpg) no-repeat 0 0 / 9px ">삭제</a></span> 
 		      			<span>${p.reg_date }</span> 
 					</li>
 				</c:forEach>
@@ -38,7 +38,7 @@
 
 		<div id="extra">
 			<div class="blog-logo">
-				<img src="${pageContext.request.contextPath }/${blog.logo }">
+				<img src="${pageContext.request.contextPath }/${blogbyId.logo }">
 			</div>
 		</div>
 

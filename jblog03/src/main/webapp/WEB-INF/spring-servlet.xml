@@ -44,7 +44,7 @@
 	
 	
 	<!-- mvc url-resource mapping -->
-	<mvc:resources mapping="/assets/images/**" location="file:/upload-jblog/" />
+	<mvc:resources mapping="/assets/image/**" location="file:/upload-jblog/" />
 	
 	<!-- Interceptors -->
 	<mvc:interceptors>

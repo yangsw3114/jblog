@@ -5,7 +5,7 @@
     pageEncoding="UTF-8"%>
 
 		<div id="header">
-			<h1><a href="${pageContext.request.contextPath }/${authUser.getId() }">${blog.title }</a></h1>
+			<h1><a href="${pageContext.request.contextPath }/${authUser.getId() }">${blogbyId.title }</a></h1>
 			<ul>						
 				<c:choose>
 					<c:when test="${empty authUser }">
