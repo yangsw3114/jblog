@@ -30,7 +30,7 @@
 	
 
 
-	<logger name="com.douzone.mysite.exception" level="error" additivity="false">
+	<logger name="com.douzone.jblog.exception" level="error" additivity="false">
 			<appender-ref ref="consoleAppender" />
             <appender-ref ref="fileAppender" />
     </logger>
@@ -38,7 +38,7 @@
 
 	
 	<!-- 루트(글로벌) 로거 -->
-	<root level="info"> <!-- 너무많이 뜨면 warn으로 낮추면됨 -->
+	<root level="warn"> <!-- 너무많이 뜨면 warn으로 낮추면됨 -->
 		<appender-ref ref="consoleAppender" />
 	</root>
 
